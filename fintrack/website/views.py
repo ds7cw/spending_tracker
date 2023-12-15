@@ -12,7 +12,7 @@ from .models import Payment
 def demo_view(request):
     current_user = request.user
     payments = Payment.objects.filter(user=current_user)
-    context = {'payments': payments}
+    context = {'payments': payments, 'user': current_user}
 
     return render(request, 'main/demo.html', context=context)
 

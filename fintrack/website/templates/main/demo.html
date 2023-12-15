@@ -5,6 +5,9 @@
 {% block content %}
 <br>
 <body>
+    {%if user.is_authenticated %}
+        <h2>Hello {{ user }}</h2>
+    {% endif %}
     {% if payments %}
         <table>
             <tr>
