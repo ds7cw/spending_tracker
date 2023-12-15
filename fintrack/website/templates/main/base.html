@@ -1,0 +1,14 @@
+<div class="topnav">
+    <a class="active" href="{% url 'demo view' %}" style="font-size: x-large;">Home</a>
+    <a href="{% url 'create payment view' %}" style="font-size: x-large;">Create New Record</a>
+    <a href="{% url 'user register' %}" style="font-size: x-large;">Register</a>
+    <a href="{% url 'login' %}" style="font-size: x-large;">Login</a>
+</div>
+
+<title>
+    {% block title %}FinTrack{% endblock %}
+</title>
+<body>
+    {% block content %}
+    {% endblock %}    
+</body>
