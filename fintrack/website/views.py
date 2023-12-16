@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import CreateView
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.db.models import Sum
+
 import plotly.express as px
 
 from .models import Payment
@@ -10,9 +13,18 @@ from .models import Payment
 # Create your views here.
 
 def demo_view(request):
+
     current_user = request.user
-    payments = Payment.objects.filter(user=current_user)
-    context = {'payments': payments, 'user': current_user}
+    if current_user is None:
+        print(current_user)
+    context = {'user': current_user}
+
+    if current_user.is_authenticated:
+        payments = Payment.objects.filter(user=current_user)
+        context['payments'] = payments
+        if payments:
+            monthly_chart = monthly_chart_func(payments)
+            context['m_chart'] = monthly_chart
 
     return render(request, 'main/demo.html', context=context)
 
@@ -59,3 +71,26 @@ def index(request):
     chart = fig.to_html()
     context = {'chart': chart}
     return render(request, 'main/index.html', context)
+
+
+def logout_view(request):
+    logout(request)
+    # messages.success(request, message='You have successfully logged out.') 
+    return redirect('demo view')
+
+
+def monthly_chart_func(dataset):
+    months = {10: 'Oct', 11: 'Nov', 12: 'Dec'}
+    x_y_data = dataset.values('payment_date__month').annotate(per_month=Sum('amount'))
+    x_axis = []
+    y_axis = []
+    for item in x_y_data:
+        x_axis.append(months[item['payment_date__month']])
+        y_axis.append(item['per_month'])
+
+    fig = px.bar(
+        x=x_axis,
+        y=y_axis,
+        title='Monthly Spending Summary',
+    )
+    return fig.to_html()

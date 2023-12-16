@@ -7,30 +7,34 @@
 <body>
     {%if user.is_authenticated %}
         <h2>Hello {{ user }}</h2>
-    {% endif %}
-    {% if payments %}
-        <table>
-            <tr>
-                <th>Payment Date</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>User</th>
-            </tr>
 
-            {% for payment in payments %}
-
+        {% if payments %}
+            <table>
                 <tr>
-                    <td>{{ payment.payment_date }}</td>
-                    <td>{{ payment.category }}</td>
-                    <td>{{ payment.description }}</td>
-                    <td>{{ payment.amount }}</td>
-                    <td>{{ payment.user }}</td>
+                    <th>Payment Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>User</th>
                 </tr>
-        
-            {% endfor %}
 
-        </table>
+                {% for payment in payments %}
+
+                    <tr>
+                        <td>{{ payment.payment_date }}</td>
+                        <td>{{ payment.category }}</td>
+                        <td>{{ payment.description }}</td>
+                        <td>{{ payment.amount }}</td>
+                        <td>{{ payment.user }}</td>
+                    </tr>
+            
+                {% endfor %}
+
+            </table>
+            {{ m_chart|safe }}
+        {% endif %}
+    {% else %}
+        <h2>You are not logged in!</h2>
     {% endif %}
 </body>
 
