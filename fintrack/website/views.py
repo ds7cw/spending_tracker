@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.db.models import Sum
 
 import plotly.express as px
+import plotly.graph_objects as go
 
 from .models import Payment
 
@@ -24,7 +25,9 @@ def demo_view(request):
         context['payments'] = payments
         if payments:
             monthly_chart = monthly_chart_func(payments)
+            pie_chart = pie_chart_func(payments)
             context['m_chart'] = monthly_chart
+            context['pie_chart'] = pie_chart
 
     return render(request, 'main/demo.html', context=context)
 
@@ -94,3 +97,16 @@ def monthly_chart_func(dataset):
         title='Monthly Spending Summary',
     )
     return fig.to_html()
+
+
+def pie_chart_func(dataset):
+    x_y_data = dataset.values('category').annotate(category_sum=Sum('amount'))
+    x_axis = []
+    y_axis = []
+    for item in x_y_data:
+        x_axis.append(item['category'])
+        y_axis.append(item['category_sum'])
+    
+    fig = go.Figure(data=[go.Pie(labels=x_axis, values=y_axis, hole=.3)])
+    return fig.to_html()
+    

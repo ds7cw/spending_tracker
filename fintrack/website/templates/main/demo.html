@@ -6,32 +6,46 @@
 <br>
 <body>
     {%if user.is_authenticated %}
-        <h2>Hello {{ user }}</h2>
-
+        <div class="container">
+            <h2>Hello {{ user }}</h2>
+        </div>
         {% if payments %}
-            <table>
-                <tr>
-                    <th>Payment Date</th>
-                    <th>Category</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>User</th>
-                </tr>
+            <div class="container">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead class="thead table-dark">
+                        <tr>
+                            <th scope="col">Payment Date</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
 
-                {% for payment in payments %}
-
-                    <tr>
-                        <td>{{ payment.payment_date }}</td>
-                        <td>{{ payment.category }}</td>
-                        <td>{{ payment.description }}</td>
-                        <td>{{ payment.amount }}</td>
-                        <td>{{ payment.user }}</td>
-                    </tr>
-            
-                {% endfor %}
-
-            </table>
-            {{ m_chart|safe }}
+                            <tr>
+                                <td>{{ payment.payment_date }}</td>
+                                <td>{{ payment.category }}</td>
+                                <td>{{ payment.description }}</td>
+                                <td>{{ payment.amount }}</td>
+                                <td>{{ payment.user }}</td>
+                            </tr>
+                    
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-7">
+                        {{ m_chart|safe }}
+                    </div>
+                    <div class="col">
+                        {{ pie_chart|safe }}
+                    </div>
+                </div>
+            </div>
         {% endif %}
     {% else %}
         <h2>You are not logged in!</h2>

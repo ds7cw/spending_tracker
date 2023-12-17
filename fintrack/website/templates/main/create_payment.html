@@ -2,10 +2,11 @@
 {% block title %}Create New Payment{% endblock %}
 {% block content %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button>Create</button>
-</form>
-
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>Create</button>
+    </form>
+</div>
 {% endblock %}
