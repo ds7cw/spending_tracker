@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.db.models import Sum
+from django.core.paginator import Paginator
 
 import plotly.express as px
 import plotly.graph_objects as go
@@ -16,8 +17,6 @@ from .models import Payment
 def demo_view(request):
 
     current_user = request.user
-    if current_user is None:
-        print(current_user)
     context = {'user': current_user}
 
     if current_user.is_authenticated:
@@ -28,6 +27,11 @@ def demo_view(request):
             pie_chart = pie_chart_func(payments)
             context['m_chart'] = monthly_chart
             context['pie_chart'] = pie_chart
+
+            p = Paginator(payments, per_page=20)
+            page = request.GET.get('page')
+            payments_page = p.get_page(page)
+            context['payments_page'] = payments_page
 
     return render(request, 'main/demo.html', context=context)
 
@@ -83,7 +87,9 @@ def logout_view(request):
 
 
 def monthly_chart_func(dataset):
-    months = {10: 'Oct', 11: 'Nov', 12: 'Dec'}
+    months = {
+        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
     x_y_data = dataset.values('payment_date__month').annotate(per_month=Sum('amount'))
     x_axis = []
     y_axis = []

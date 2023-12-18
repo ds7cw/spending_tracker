@@ -6,8 +6,9 @@
 <br>
 <body>
     {%if user.is_authenticated %}
-        <div class="container">
-            <h2>Hello {{ user }}</h2>
+        <div class="container justify-content-center">
+            <p class="text-center shadow">You are logged in as <em>{{ user }}</em></p>
+            <br>
         </div>
         {% if payments %}
             <div class="container">
@@ -22,8 +23,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for payment in payments %}
-
+                        {% for payment in payments_page %}
                             <tr>
                                 <td>{{ payment.payment_date }}</td>
                                 <td>{{ payment.category }}</td>
@@ -35,8 +35,35 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <div>
+                    <nav>
+                        <ul class="pagination justify-content-center dark">
+                            {% if payments_page.has_previous %}
+                            <li class="page-item">    
+                                <a class="page-link link-dark" href="?page=1">&laquo;</a>
+                            </li>
+                            <li class="page-item"> 
+                                <a class="page-link link-dark" href="?page={{ payments_page.previous_page_number }}">
+                                    {{ payments_page.previous_page_number }}</a>
+                            </li> 
+                            {% endif %}
+                            <li class="page-item"> 
+                                <p class="page-link link-dark">{{ payments_page.number }}</p>
+                            </li>
+                            {% if payments_page.has_next %}
+                            <li class="page-item">     
+                                <a class="page-link link-dark" href="?page={{ payments_page.next_page_number }}">
+                                    {{ payments_page.next_page_number }}</a>
+                            </li>
+                            <li class="page-item"> 
+                                <a class="page-link link-dark" href="?page={{ payments_page.paginator.num_pages }}">&raquo;</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
             </div>
-            <div class="container">
+            <div class="container border">
                 <div class="row">
                     <div class="col-7">
                         {{ m_chart|safe }}
@@ -46,6 +73,7 @@
                     </div>
                 </div>
             </div>
+            <br>
         {% endif %}
     {% else %}
         <h2>You are not logged in!</h2>
