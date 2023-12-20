@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Custom Chart{% endblock %}
+
+{% block content %}
+
+<section class="container bg-light pt-4">
+    <div class="container">
+        <div class="text-center">
+          <h2>Get in touch</h2>
+          <p class="lead">Have a question? Fill out the form below...</p>
+        </div>
+
+        <div class="row justify-content-center my-5">
+          <div class="col-lg-6">
+            <form>
+              <label for="email" class="form-label">Email address:</label>
+              <input type="email" class="form-control mb-4" id="email" placeholder="name@example.com">
+              
+              <label for="name" class="form-label">Name:</label>
+              <input type="text" class="form-control mb-4" id="name" placeholder="Your name">
+              
+              <label for="subject" class="form-label">Select category</label>
+              <select class="form-select mb-4" id="subject">
+                <option value="data">Data protection</option>
+                <option value="impovement">Improve our services</option>
+                <option value="unsubscribe">Unsubscribe</option>
+                <option value="other">Other</option>               
+              </select>
+
+              <label for="question" class="form-label">Your question...</label>
+              <textarea id="question" class="form-control" style="height: 140px;"></textarea>
+              <div class="my-4 text-center">
+                <button type="submit" class="btn btn-secondary">Submit</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+  </section>
+
+{% endblock %}

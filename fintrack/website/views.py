@@ -11,6 +11,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from .models import Payment
+from .forms import DateForm
+
 
 # Create your views here.
 
@@ -116,3 +118,32 @@ def pie_chart_func(dataset):
     fig = go.Figure(data=[go.Pie(labels=x_axis, values=y_axis, hole=.3)])
     return fig.to_html()
     
+
+def custom_chart(request):
+    payments = Payment.objects.filter(user=request.user)
+    form = DateForm()
+    context = {'form': form}
+
+    start = request.GET.get('start_date')
+    end = request.GET.get('end_date')
+    category = request.GET.getlist('category')
+    search_data = {'start': start, 'end': end, 'category': category}
+
+    if start:
+        payments = Payment.objects.filter(payment_date__gte=start)
+    if end:
+        payments = payments.filter(payment_date__lte=end)
+    if category:
+        payments = payments.filter(category__in=category)
+        category_list = ', '.join(category)
+        search_data['category_list'] = category_list
+        
+    monthly_chart = monthly_chart_func(payments)
+    context['monthly_chart'] = monthly_chart
+    context['search_data'] = search_data
+
+    return render(request, 'main/custom_chart.html', context)
+
+
+def contacts(request):
+    return render(request, 'main/contacts.html')

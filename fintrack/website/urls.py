@@ -10,5 +10,7 @@ urlpatterns = [
             # path('login/', views.UserLoginView.as_view(), name='login view'),
         ])
     ),
-    path('logout/', views.logout_view, name='logout user') 
+    path('logout/', views.logout_view, name='logout user'),
+    path('custom-chart/', views.custom_chart, name='custom chart'), 
+    path('contacts/', views.contacts, name='contacts'), 
 ]

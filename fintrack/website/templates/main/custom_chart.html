@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Custom Chart{% endblock %}
+
+{% block content %}
+
+    <section class="container bg-light my-4 py-2">
+        <form method="GET" action="{% url 'custom chart' %}">
+            <div class="row">
+                <div class="col">Start Date {{ form.start_date }}</div>
+                <div class="col">End Date {{ form.end_date }}</div>
+                <div type="checkbox" class="col">Category {{ form.category }}</div>
+                <div class="col">
+                    <button type="submit" class="btn btn-secondary py-0" name="submit">Submit</button>
+                </div>
+
+            </div>
+        </form>
+    </section>
+
+    <section class="container bg-light py-4">
+        <div class="row">
+            {% if search_data.start %}
+                <p>Start Date: {{ search_data.start }}</p>
+            {% endif %}
+            {% if search_data.end %}
+                <p>End Date: {{ search_data.end }}</p>
+            {% endif %}
+            <div class="container">
+                {% if search_data.category %}
+                    <div>
+                        <p>Categories: {{ search_data.category_list }}</p>
+                    </div>
+                {% else %}
+                    <div><p>Categories: All</p></div>
+                {% endif %}
+            </div>
+        </div>
+        <div>{{ monthly_chart|safe }}</div>
+    </section>
+
+{% endblock %}
