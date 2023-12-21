@@ -147,3 +147,33 @@ def custom_chart(request):
 
 def contacts(request):
     return render(request, 'main/contacts.html')
+
+
+def stacked_bar(request):
+
+    dataset = Payment.objects.select_related('user').filter(user__id=2)
+    categories = ['Savings', 'Investing', 'Groceries']
+    dataset = dataset.filter(payment_date__lte='2023-05-31', category__in=categories)
+    dataset = dataset.values('payment_date__month', 'category').annotate(sum_per_cat=Sum('amount'))
+    
+    months_x_axis = list(dataset.values_list('payment_date__month', flat=True))[:5]
+    print(f'MONTHS AXIS: {months_x_axis}')
+    master_container = {}
+    all_charts = []
+
+    for cat in categories:
+        current_y_axis = dataset.filter(category=cat).values_list('sum_per_cat', flat=True)
+        master_container[cat] = current_y_axis
+
+    for chart_name, y_data in master_container.items():
+        current_bar = go.Bar(name=chart_name, x=months_x_axis, y=list(y_data))
+        all_charts.append(current_bar)    
+
+    fig1 = go.Figure(
+        data=[*all_charts])
+
+    fig1.update_layout(barmode='stack')
+    chart = fig1.to_html()
+    context = {'chart': chart}
+
+    return render(request, 'main/stacked.html', context=context)

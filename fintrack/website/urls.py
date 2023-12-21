@@ -13,4 +13,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout user'),
     path('custom-chart/', views.custom_chart, name='custom chart'), 
     path('contacts/', views.contacts, name='contacts'), 
+    path('stacked/', views.stacked_bar, name='stacked')
 ]
