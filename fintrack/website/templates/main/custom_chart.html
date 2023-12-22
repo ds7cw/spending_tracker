@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col">Start Date {{ form.start_date }}</div>
                 <div class="col">End Date {{ form.end_date }}</div>
-                <div type="checkbox" class="col">Category {{ form.category }}</div>
+                <div type="checkbox" class="col">Categories {{ form.categories }}</div>
                 <div class="col">
                     <button type="submit" class="btn btn-secondary py-0" name="submit">Submit</button>
                 </div>
@@ -27,16 +27,16 @@
                 <p>End Date: {{ search_data.end }}</p>
             {% endif %}
             <div class="container">
-                {% if search_data.category %}
+                {% if search_data.categories %}
                     <div>
-                        <p>Categories: {{ search_data.category_list }}</p>
+                        <p>Categories: {{ search_data.categories_list }}</p>
                     </div>
                 {% else %}
                     <div><p>Categories: All</p></div>
                 {% endif %}
             </div>
         </div>
-        <div>{{ monthly_chart|safe }}</div>
+        <div>{{ stacked_chart|safe }}</div>
     </section>
 
 {% endblock %}

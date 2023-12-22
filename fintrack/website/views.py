@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 
 from .models import Payment
 from .forms import DateForm
+from .helper_functions import months_labels_func
 
 
 # Create your views here.
@@ -89,20 +90,20 @@ def logout_view(request):
 
 
 def monthly_chart_func(dataset):
-    months = {
+    months_dict = {
         1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
         7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
     x_y_data = dataset.values('payment_date__month').annotate(per_month=Sum('amount'))
     x_axis = []
     y_axis = []
     for item in x_y_data:
-        x_axis.append(months[item['payment_date__month']])
+        x_axis.append(months_dict[item['payment_date__month']])
         y_axis.append(item['per_month'])
 
     fig = px.bar(
         x=x_axis,
         y=y_axis,
-        title='Monthly Spending Summary',
+        title='Spending Summary',
     )
     return fig.to_html()
 
@@ -126,20 +127,20 @@ def custom_chart(request):
 
     start = request.GET.get('start_date')
     end = request.GET.get('end_date')
-    category = request.GET.getlist('category')
-    search_data = {'start': start, 'end': end, 'category': category}
+    categories = request.GET.getlist('categories')
+    search_data = {'start': start, 'end': end, 'categories': categories}
 
     if start:
-        payments = Payment.objects.filter(payment_date__gte=start)
+        payments = payments.filter(payment_date__gte=start)
     if end:
         payments = payments.filter(payment_date__lte=end)
-    if category:
-        payments = payments.filter(category__in=category)
-        category_list = ', '.join(category)
-        search_data['category_list'] = category_list
-        
-    monthly_chart = monthly_chart_func(payments)
-    context['monthly_chart'] = monthly_chart
+    if categories:
+        payments = payments.filter(category__in=categories)
+        categories_list = ', '.join(categories)
+        search_data['categories_list'] = categories_list
+    
+    stacked_chart = stacked_bar(payments, categories)
+    context['stacked_chart'] = stacked_chart
     context['search_data'] = search_data
 
     return render(request, 'main/custom_chart.html', context)
@@ -149,31 +150,25 @@ def contacts(request):
     return render(request, 'main/contacts.html')
 
 
-def stacked_bar(request):
+def stacked_bar(dataset, categories):
 
-    dataset = Payment.objects.select_related('user').filter(user__id=2)
-    categories = ['Savings', 'Investing', 'Groceries']
-    dataset = dataset.filter(payment_date__lte='2023-05-31', category__in=categories)
     dataset = dataset.values('payment_date__month', 'category').annotate(sum_per_cat=Sum('amount'))
-    
-    months_x_axis = list(dataset.values_list('payment_date__month', flat=True))[:5]
-    print(f'MONTHS AXIS: {months_x_axis}')
-    master_container = {}
     all_charts = []
 
     for cat in categories:
+        current_y_axis = dataset.filter(category=cat)
+        months_queryset = current_y_axis.values_list('payment_date__month', flat=True)
+        months_labels = months_labels_func(months_queryset)
+ 
         current_y_axis = dataset.filter(category=cat).values_list('sum_per_cat', flat=True)
-        master_container[cat] = current_y_axis
+        current_bar = go.Bar(name=cat, x=months_labels, y=list(current_y_axis))
+        all_charts.append(current_bar)  
 
-    for chart_name, y_data in master_container.items():
-        current_bar = go.Bar(name=chart_name, x=months_x_axis, y=list(y_data))
-        all_charts.append(current_bar)    
-
-    fig1 = go.Figure(
-        data=[*all_charts])
-
-    fig1.update_layout(barmode='stack')
-    chart = fig1.to_html()
-    context = {'chart': chart}
-
-    return render(request, 'main/stacked.html', context=context)
+    fig = go.Figure(data=[*all_charts])
+    fig.update_layout(barmode='stack')
+    fig.update_xaxes(
+        categoryorder='array',
+        categoryarray= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
+    chart = fig.to_html()
+    
+    return chart
