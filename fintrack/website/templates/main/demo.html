@@ -29,6 +29,8 @@
                             <th scope="col">Description</th>
                             <th scope="col">Amount</th>
                             <th scope="col">User</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,6 +41,12 @@
                                 <td>{{ payment.description }}</td>
                                 <td>{{ payment.amount }}</td>
                                 <td>{{ payment.user }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'edit payment' payment.pk %}" role="button" class="btn btn-secondary py-0">Edit</a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'delete payment' payment.pk %}" role="button" class="btn btn-danger py-0" data-index="{{ payment.id }}">Delete</a>
+                                </td>
                             </tr>
                     
                         {% endfor %}

@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Delete Payment{% endblock %}
+
+{% block content %}
+
+
+<div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
+    
+    <div class="container text-center"> 
+        <div class="section bg-light pb-4">
+            <div class="bg-danger">
+                <p class="text-white"><strong>
+                    You are about to permanently delete this record! Hit <em>Delete</em> to confirm or <em>Cancel</em> to go back?</strong>
+                </p>
+            </div>
+                <p><strong>Payment Date:</strong> {{ payment.payment_date }}</p>
+                <p><strong>Category:</strong> {{ payment.category }}</p>
+                <p><strong>Description:</strong> {{ payment.description }}</p>
+                <p><strong>Amount:</strong> {{ payment.amount }}</p>
+            <div>
+                <button class="btn btn-danger mx-4">Delete</button>
+                <a href="{% url 'demo view' %}" role="button" class="btn btn-secondary mx-4">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

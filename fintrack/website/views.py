@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DeleteView, UpdateView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
@@ -172,3 +172,15 @@ def stacked_bar(dataset, categories):
     chart = fig.to_html()
     
     return chart
+
+
+class DeletePaymentView(DeleteView):
+    model = Payment
+    template_name = 'main/delete_payment.html'
+    success_url = reverse_lazy('demo view')
+
+
+class EditPaymentView(UpdateView):
+    model = Payment
+    template_name = 'main/edit_payment.html'
+    fields = ['payment_date', 'category', 'description', 'amount']

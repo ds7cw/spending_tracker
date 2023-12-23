@@ -13,4 +13,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout user'),
     path('custom-chart/', views.custom_chart, name='custom chart'), 
     path('contacts/', views.contacts, name='contacts'),
+    path('payment/<int:pk>/delete/', views.DeletePaymentView.as_view(), name='delete payment'),
+    path('payment/<int:pk>/edit/', views.EditPaymentView.as_view(), name='edit payment'),
 ]
