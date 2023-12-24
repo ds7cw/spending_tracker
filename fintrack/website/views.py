@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, DeleteView, UpdateView
+from django.views.generic import CreateView, DeleteView, UpdateView, DetailView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
@@ -17,7 +17,7 @@ from .helper_functions import months_labels_func
 
 # Create your views here.
 
-def demo_view(request):
+def home_view(request):
 
     current_user = request.user
     context = {'user': current_user}
@@ -36,7 +36,7 @@ def demo_view(request):
             payments_page = p.get_page(page)
             context['payments_page'] = payments_page
 
-    return render(request, 'main/demo.html', context=context)
+    return render(request, 'main/home.html', context=context)
 
 
 class UserRegistrationView(CreateView):
@@ -86,7 +86,7 @@ def index(request):
 def logout_view(request):
     logout(request)
     # messages.success(request, message='You have successfully logged out.') 
-    return redirect('demo view')
+    return redirect('home view')
 
 
 def monthly_chart_func(dataset):
@@ -177,10 +177,19 @@ def stacked_bar(dataset, categories):
 class DeletePaymentView(DeleteView):
     model = Payment
     template_name = 'main/delete_payment.html'
-    success_url = reverse_lazy('demo view')
+    success_url = reverse_lazy('home view')
 
 
 class EditPaymentView(UpdateView):
     model = Payment
     template_name = 'main/edit_payment.html'
     fields = ['payment_date', 'category', 'description', 'amount']
+    success_url = reverse_lazy('home view')
+
+
+def account_details(request):
+    if request.user.is_authenticated:
+        context = {'user': request.user}
+        return render(request, 'registration/account_details.html', context)
+
+    return redirect('home view')
