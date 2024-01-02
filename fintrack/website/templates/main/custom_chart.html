@@ -7,9 +7,9 @@
     <section class="container bg-light my-4 py-2">
         <form method="GET" action="{% url 'custom chart' %}">
             <div class="row">
-                <div class="col">Start Date {{ form.start_date }}</div>
-                <div class="col">End Date {{ form.end_date }}</div>
-                <div type="checkbox" class="col">Categories {{ form.categories }}</div>
+                <div class="col"><strong>Start Date</strong> {{ form.start_date }}</div>
+                <div class="col"><strong>End Date</strong> {{ form.end_date }}</div>
+                <div type="checkbox" class="col"><strong>Categories</strong> {{ form.categories }}</div>
                 <div class="col">
                     <button type="submit" class="btn btn-secondary py-0" name="submit">Submit</button>
                 </div>
@@ -21,18 +21,18 @@
     <section class="container bg-light py-4">
         <div class="row">
             {% if search_data.start %}
-                <p>Start Date: {{ search_data.start }}</p>
+                <p><strong>Start Date:</strong> {{ search_data.start }}</p>
             {% endif %}
             {% if search_data.end %}
-                <p>End Date: {{ search_data.end }}</p>
+                <p><strong>End Date:</strong> {{ search_data.end }}</p>
             {% endif %}
             <div class="container">
                 {% if search_data.categories %}
                     <div>
-                        <p>Categories: {{ search_data.categories_list }}</p>
+                        <p><strong>Categories:</strong> {{ search_data.categories_list }}</p>
                     </div>
                 {% else %}
-                    <div><p>Categories: All</p></div>
+                    <div><p><strong>Categories:</strong> All</p></div>
                 {% endif %}
             </div>
         </div>

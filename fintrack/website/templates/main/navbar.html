@@ -15,6 +15,9 @@
               </button>
             </div>
           {% else %}
+            <div class="container-fluid justify-content-center">
+                <p class="text-center text-white my-auto">Logged in as <em>{{ user }}</em></p>
+            </div>
             <div>
               <a href="{% url 'account details' %}" role="button" class="text-white h3 me-4">
                 <i class="bi bi-person-circle "></i>

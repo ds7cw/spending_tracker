@@ -4,17 +4,16 @@ from django import forms
 class DateForm(forms.Form):
     
     CATEGORY_CHOICES = {
-        'All': 'All',
-        'Groceries': 'Groceries',
-        'Fashion': 'Fashion',
-        'Car': 'Car',
         'Bills': 'Bills',
-        'Public ransport': 'Public Transport',
-        'Property': 'Property',
-        'Investing': 'Investing',
-        'Healthcare': 'Healthcare',
-        'Entertainment': 'Entertainment',
+        'Car': 'Car',
         'Education': 'Education',
+        'Entertainment': 'Entertainment',
+        'Fashion': 'Fashion',
+        'Groceries': 'Groceries',
+        'Healthcare': 'Healthcare',
+        'Investing': 'Investing',
+        'Property': 'Property',
+        'Public Transport': 'Public Transport',
         'Savings': 'Savings',
         'Travel': 'Travel'
     }

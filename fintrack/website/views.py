@@ -104,7 +104,9 @@ def monthly_chart_func(dataset):
         x=x_axis,
         y=y_axis,
         title='Spending Summary',
+        text_auto='.2s'
     )
+    fig.update_layout(yaxis_title=None, xaxis_title=None)
     return fig.to_html()
 
 
@@ -161,7 +163,8 @@ def stacked_bar(dataset, categories):
         months_labels = months_labels_func(months_queryset)
  
         current_y_axis = dataset.filter(category=cat).values_list('sum_per_cat', flat=True)
-        current_bar = go.Bar(name=cat, x=months_labels, y=list(current_y_axis))
+        y_axis = [f'{item:.2f}' for item in current_y_axis]
+        current_bar = go.Bar(name=cat, x=months_labels, y=list(current_y_axis), text=y_axis)
         all_charts.append(current_bar)  
 
     fig = go.Figure(data=[*all_charts])
@@ -193,3 +196,11 @@ def account_details(request):
         return render(request, 'registration/account_details.html', context)
 
     return redirect('home view')
+
+
+def avg_monthly_spending(dataset):
+    pass
+
+
+def current_month_spending(dataset):
+    pass
