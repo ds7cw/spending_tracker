@@ -47,7 +47,7 @@ emmas_payments = Payment.objects.filter(user=emma_user)
 
 # my_range=range(90, 210)
 # my_date_range=range(18, 26)
-# alex_user = User.objects.get(id=2)
+alex_user = User.objects.get(id=2)
 # for i in range(1, 13):
     # my_day = random.choice(my_date_range)
     # my_date=f'2023-{i}-28'
@@ -64,17 +64,30 @@ emmas_payments = Payment.objects.filter(user=emma_user)
 
 alex_payments = Payment.objects.select_related('user').filter(user__id=2)
 # print(alex_payments)
-from django.db.models import Sum
+from django.db.models import Sum, F, When, Case, Avg
 
-categories = ['Savings', 'Investing']
+# categories = ['Savings', 'Investing']
 
-after_filter = alex_payments.filter(payment_date__lte='2023-03-31', category__in=categories)
-# print(filtered)
-after_values = after_filter.values('payment_date__month', 'category').annotate(sum_per_cat=Sum('amount'))
-print(after_values)
+# after_filter = alex_payments.filter(payment_date__lte='2023-03-31', category__in=categories)
+# # print(filtered)
+# after_values = after_filter.values('payment_date__month', 'category').annotate(sum_per_cat=Sum('amount'))
+# print(after_values)
 
-master_container = {}
+# master_container = {}
 
-for cat in categories:
-    print(after_values.filter(category=cat).values_list('sum_per_cat', flat=True))
-    # master_container[cat] = after_values.values('sum_per_')
+# for cat in categories:
+#     print(after_values.filter(category=cat).values_list('sum_per_cat', flat=True))
+#     # master_container[cat] = after_values.values('sum_per_')
+
+# diff = alex_payments.values('payment_date__month', 'payment_type').annotate(remaining=Sum('amount'))
+# print(diff)
+
+# diff_2 = alex_payments.values('payment_date__month').annotate(
+#     balance=Sum(Case(When(payment_type='Credit', then=F('amount')), default=-F('amount')))
+# )
+
+# print(diff_2.values_list('payment_date__month', flat=True))
+# print(diff_2.values_list('balance', flat=True))
+
+avg_spend = alex_payments.filter(payment_type='Debit').values('payment_date__month').annotate(m_sum=Sum('amount')).aggregate(Avg('m_sum'))
+print(f"{avg_spend['m_sum__avg']:.2f}")

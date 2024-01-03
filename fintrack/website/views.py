@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, Avg, Case, When, F
 from django.core.paginator import Paginator
 
 import plotly.express as px
@@ -25,11 +25,20 @@ def home_view(request):
     if current_user.is_authenticated:
         payments = Payment.objects.filter(user=current_user)
         context['payments'] = payments
+        debit = payments.filter(payment_type='Debit')
         if payments:
-            monthly_chart = monthly_chart_func(payments)
-            pie_chart = pie_chart_func(payments)
+            monthly_chart = monthly_chart_func(debit)
+            pie_chart = pie_chart_func(debit)
+            savings_chart, avg_savings = monthly_savings_chart_func(payments)
+            context['savings_chart'] = savings_chart
+            context['avg_savings'] = f'{avg_savings:.2f}'
+
             context['m_chart'] = monthly_chart
             context['pie_chart'] = pie_chart
+
+            avg_spending = debit.filter(payment_type='Debit').values('payment_date__month').annotate(
+                m_sum=Sum('amount')).aggregate(Avg('m_sum'))
+            context['avg_spending'] = f"{avg_spending['m_sum__avg']:.2f}"
 
             p = Paginator(payments, per_page=20)
             page = request.GET.get('page')
@@ -47,8 +56,9 @@ class UserRegistrationView(CreateView):
 
 class CreatePayment(CreateView):
     model = Payment
-    fields = ['payment_date', 'category', 'description', 'amount']
+    fields = ['payment_date', 'category', 'description', 'payment_type','amount']
     template_name = 'main/create_payment.html'
+    success_url = reverse_lazy('home view')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -123,7 +133,7 @@ def pie_chart_func(dataset):
     
 
 def custom_chart(request):
-    payments = Payment.objects.filter(user=request.user)
+    payments = Payment.objects.filter(user=request.user, payment_type='Debit')
     form = DateForm()
     context = {'form': form}
 
@@ -146,6 +156,32 @@ def custom_chart(request):
     context['search_data'] = search_data
 
     return render(request, 'main/custom_chart.html', context)
+
+
+def monthly_savings_chart_func(dataset):
+    
+    months_dict = {
+        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
+        7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
+    x_data = []
+    y_data = []
+    savings = dataset.values('payment_date__month').annotate(
+        balance=Sum(Case(When(payment_type='Credit', then=F('amount')), default=-F('amount')))
+    )
+    for item in savings:
+        x_data.append(months_dict[item['payment_date__month']])
+        y_data.append(item['balance'])
+    
+    fig = px.bar(
+        x=x_data,
+        y=y_data,
+        title='Savings Summary',
+        text_auto='.0f',
+        color_discrete_sequence=['seagreen']  
+    )
+    fig.update_layout(yaxis_title=None, xaxis_title=None)
+    average_savings = sum(y_data) / len(y_data)
+    return fig.to_html(), average_savings
 
 
 def contacts(request):
@@ -186,7 +222,7 @@ class DeletePaymentView(DeleteView):
 class EditPaymentView(UpdateView):
     model = Payment
     template_name = 'main/edit_payment.html'
-    fields = ['payment_date', 'category', 'description', 'amount']
+    fields = ['payment_date', 'category', 'description', 'payment_type','amount']
     success_url = reverse_lazy('home view')
 
 

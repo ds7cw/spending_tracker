@@ -3,10 +3,10 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<br>
+
 <body>
     {%if user.is_authenticated %}
-        <div class="container border mb-4">
+        <div class="container border mb-3 py-0">
             <div class="row">
                 <div class="col-7">
                     {{ m_chart|safe }}
@@ -15,28 +15,39 @@
                     {{ pie_chart|safe }}
                 </div>
             </div>
-            <div class="container py-4">
-                    <div class="row justify-content-end">
-                     <div class="col-4">
-                         <div class="card border-dark mb-3" style="max-width: 18rem;">
-                             <div class="card-header"><h4>1850.00</h4></div>
-                             <div class="card-body">
-                             <h5 class="card-title">Average monthly spending</h5>
-                             </div>
-                         </div>
-                     </div>
-                    </div>
-                    <div class="row justify-content-end">
-                     <div class="col-4 align-right">
-                         <div class="card border-primary mb-3" style="max-width: 18rem;">
-                             <div class="card-header"><h4>1267.00</h4></div>
-                             <div class="card-body">
-                             <h5 class="card-title">This month's spending</h5>
-                             </div>
-                         </div>
-                     </div>
-                    </div>
-             </div>
+
+            <div class="row">
+                <div class="container py-2">
+                        <div class="row">
+                        <div class="col-7 me-5">
+                            {{ savings_chart|safe }}
+                        </div>
+                        
+                        <div class="col">  
+                            <br><br><br><br>  
+                            <div class="container">
+                                <div class="card border-dark mb-3" style="max-width: 18rem;">
+                                    <div class="card-header"><h4>{{ avg_spending }}</h4></div>
+                                    <div class="card-body">
+                                    <h5 class="card-title">Average monthly spending</h5>
+                                    </div>
+                                </div>
+
+                                <div class="card border-success" style="max-width: 18rem;">
+                                    <div class="card-header"><h4>{{ avg_savings }}</h4></div>
+                                    <div class="card-body">
+                                    <h5 class="card-title">Average monthly savings</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        </div>
+
+                </div>
+            </div>
         </div>
 
         <div class="container justify-content-center">
@@ -56,7 +67,7 @@
                             <th scope="col">Category</th>
                             <th scope="col">Description</th>
                             <th scope="col">Amount</th>
-                            <th scope="col">User</th>
+                            <th scope="col">Payment Type</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                         </tr>
@@ -68,7 +79,7 @@
                                 <td>{{ payment.category }}</td>
                                 <td>{{ payment.description }}</td>
                                 <td>{{ payment.amount }}</td>
-                                <td>{{ payment.user }}</td>
+                                <td>{{ payment.payment_type }}</td>
                                 <td class="text-center">
                                     <a href="{% url 'edit payment' payment.pk %}" role="button" class="btn btn-secondary py-0">Edit</a>
                                 </td>
