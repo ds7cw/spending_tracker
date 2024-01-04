@@ -232,11 +232,3 @@ def account_details(request):
         return render(request, 'registration/account_details.html', context)
 
     return redirect('home view')
-
-
-def avg_monthly_spending(dataset):
-    pass
-
-
-def current_month_spending(dataset):
-    pass

@@ -11,8 +11,8 @@ class DateForm(forms.Form):
         'Fashion': 'Fashion',
         'Groceries': 'Groceries',
         'Healthcare': 'Healthcare',
+        'Housing': 'Housing',
         'Investing': 'Investing',
-        'Property': 'Property',
         'Public Transport': 'Public Transport',
         'Savings': 'Savings',
         'Travel': 'Travel'

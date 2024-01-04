@@ -21,7 +21,7 @@ class Payment(models.Model):
         ('Car', 'Car'),
         ('Bills', 'Bills'),
         ('Public Transport', 'Public Transport'),
-        ('Property', 'Property'),
+        ('Housing', 'Housing'),
         ('Income', 'Income'),
         ('Investing', 'Investing'),
         ('Healthcare', 'Healthcare'),
@@ -50,4 +50,4 @@ class Payment(models.Model):
         return f'{self.payment_date} - {self.category} - £{self.amount}'
 
     def get_absolute_url(self):
-        return reverse('demo view')
+        return reverse('home view')
