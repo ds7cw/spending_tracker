@@ -65,32 +65,22 @@ class CreatePayment(CreateView):
         return super().form_valid(form)
 
 
+class EditPaymentView(UpdateView):
+    model = Payment
+    template_name = 'main/edit_payment.html'
+    fields = ['payment_date', 'category', 'description', 'payment_type','amount']
+    success_url = reverse_lazy('home view')
+
+
+class DeletePaymentView(DeleteView):
+    model = Payment
+    template_name = 'main/delete_payment.html'
+    success_url = reverse_lazy('home view')
+
+
 def index(request):
-    x_list = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    y_list = [20.25, 12.75, 6.50, 4.99, 10.20, 45, 6]
 
-    y_labels = [f'£{x}' for x in y_list]
-
-    fig = px.bar(
-        x=x_list,
-        y=y_list,
-        title='Weekly Expenses Summary',
-        labels={'x': 'Day of the Week', 'y': 'Amount'},
-        text=y_labels,
-    )
-
-    fig.update_layout(
-        title={
-            'font_size': 22,
-            'xanchor': 'center',
-            'x': 0.5
-        },
-        yaxis_range=[0,1.1 * max(y_list)],
-    )
-
-    chart = fig.to_html()
-    context = {'chart': chart}
-    return render(request, 'main/index.html', context)
+    return redirect('home view')
 
 
 def logout_view(request):
@@ -211,19 +201,6 @@ def stacked_bar(dataset, categories):
     chart = fig.to_html()
     
     return chart
-
-
-class DeletePaymentView(DeleteView):
-    model = Payment
-    template_name = 'main/delete_payment.html'
-    success_url = reverse_lazy('home view')
-
-
-class EditPaymentView(UpdateView):
-    model = Payment
-    template_name = 'main/edit_payment.html'
-    fields = ['payment_date', 'category', 'description', 'payment_type','amount']
-    success_url = reverse_lazy('home view')
 
 
 def account_details(request):
